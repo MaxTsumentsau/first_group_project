@@ -34,11 +34,19 @@ public class ManualStudentInput {
     }
 
     private Student inputStudentData() {
-        String groupNumber = inputGroupNumber();
-        double averageGrade = inputAverageGrade();
-        String recordBookNumber = inputRecordBookNumber();
+        while (true) {
+            try {
+                String groupNumber = inputGroupNumber();
+                double averageGrade = inputAverageGrade();
+                String recordBookNumber = inputRecordBookNumber();
 
-        return new Student(groupNumber, averageGrade, recordBookNumber);
+                return StudentValidator.validateAndCreateStudent(groupNumber, averageGrade, recordBookNumber);
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("Ошибка: " + e.getMessage());
+                System.out.println("Попробуйте снова ввести данные студента.\n");
+            }
+        }
     }
 
     private String inputGroupNumber() {
@@ -47,22 +55,10 @@ public class ManualStudentInput {
     }
 
     private double inputAverageGrade() {
-        while (true) {
-            try {
-                System.out.print("Введите средний балл (от 0.0 до 10.0): ");
-                String input = scanner.nextLine().trim();
-                double grade = Double.parseDouble(input.replace(',', '.'));
-
-                if (grade >= 0.0 && grade <= 10.0) {
-                    // Округление до 3 знаков после запятой
-                    return Math.round(grade * 1000.0) / 1000.0;
-                } else {
-                    System.out.println("Ошибка: средний балл должен быть от 0.0 до 10.0");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Ошибка: введите корректное число (например: 4.25)");
-            }
-        }
+        System.out.print("Введите средний балл (от 0.0 до 10.0): ");
+        String input = scanner.nextLine().trim();
+        double grade = Double.parseDouble(input.replace(',', '.'));
+        return Math.round(grade * 1000.0) / 1000.0;
     }
 
     private String inputRecordBookNumber() {

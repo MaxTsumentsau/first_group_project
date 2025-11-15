@@ -120,8 +120,7 @@ public class StudentJsonFileManager {
                     }
                 }
             }
-
-            return new Student(group, grade, recordBook);
+            return StudentValidator.validateAndCreateStudent(group, grade, recordBook);
         } catch (Exception e) {
             System.err.println("Ошибка парсинга JSON: " + json);
             return null;

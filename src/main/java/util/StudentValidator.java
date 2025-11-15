@@ -1,9 +1,12 @@
 package util;
 
+import collection.MyArrayList;
 import model.Student;
 
-public class StudentValidator {
-
+// Утилитный класс
+public final class StudentValidator {
+    private StudentValidator() {
+    }
     public static boolean isValidGroupNumber(String groupNumber) {
         return groupNumber != null && groupNumber.matches("[A-Za-z0-9]{2,10}");
     }
@@ -13,7 +16,7 @@ public class StudentValidator {
     }
 
     public static boolean isValidRecordBookNumber(String recordBookNumber) {
-        return recordBookNumber != null && recordBookNumber.matches("[А-Яа-я0-9]{5,15}");
+        return recordBookNumber != null && recordBookNumber.matches("[A-Za-z0-9]{5,15}");
     }
 
     public static Student validateAndCreateStudent(String groupNumber, double averageGrade, String recordBookNumber) {
@@ -32,5 +35,25 @@ public class StudentValidator {
                 .averageGrade(averageGrade)
                 .recordBookNumber(recordBookNumber)
                 .build();
+    }
+
+    private static MyArrayList<Student> validateStudents(MyArrayList<Student> studentsToValidate) {
+        MyArrayList<Student> validatedStudents = new MyArrayList<>();
+
+        for (Student student : studentsToValidate) {
+            try {
+                // Используем валидатор для создания нового валидированного студента
+                Student validatedStudent = StudentValidator.validateAndCreateStudent(
+                        student.getGroupNumber(),
+                        student.getAverageGrade(),
+                        student.getRecordBookNumber()
+                );
+                validatedStudents.add(validatedStudent);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Студент не прошел валидацию: " + e.getMessage());
+            }
+        }
+
+        return validatedStudents;
     }
 }

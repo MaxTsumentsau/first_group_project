@@ -19,6 +19,7 @@ public class QuickSortStudent {
         // Если передан внешний компаратор - комбинируем с базовым
         Comparator<Student> finalComparator = (comparator != null)
                 ? baseComparator.thenComparing(comparator)
+                //TODO:Сдох=(
                 : baseComparator;
 
         // Запускаем рекурсивную сортировку

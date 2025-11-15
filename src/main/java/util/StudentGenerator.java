@@ -6,9 +6,11 @@ import model.Student;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
+import java.util.Scanner;
 
 public class StudentGenerator {
     private static final Random random = new Random();
+    private static final Scanner scanner = new Scanner(System.in);
 
     // Конфигурируемые параметры
     private String[] availableGroups = {"CS101", "CS102", "MATH201", "PHY301", "CHEM401", "BIO501"};
@@ -25,7 +27,10 @@ public class StudentGenerator {
         this.recordBookPrefix = recordBookPrefix;
     }
 
-    public MyArrayList<Student> generateStudents(int numberOfStudents) {
+    public MyArrayList<Student> generateStudents() {
+        System.out.print("Введите количество студентов для генерации: ");
+        int numberOfStudents = scanner.nextInt();
+        scanner.nextLine();
         if (numberOfStudents <= 0) {
             throw new IllegalArgumentException("Количество студентов должно быть положительным числом");
         }
@@ -48,7 +53,7 @@ public class StudentGenerator {
         averageGrade = bd.doubleValue();
         String recordBookNumber = generateRecordBookNumber();
 
-        return new Student(groupNumber, averageGrade, recordBookNumber);
+        return StudentValidator.validateAndCreateStudent(groupNumber, averageGrade, recordBookNumber);
     }
 
     private String generateRecordBookNumber() {
