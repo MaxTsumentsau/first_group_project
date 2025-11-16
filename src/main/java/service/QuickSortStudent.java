@@ -1,8 +1,10 @@
 package service;
 
+import collection.MyArrayList;
 import model.Student;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class QuickSortStudent {
     public static List<Student> quickSort(Collection<Student> students, Comparator<Student> comparator) {
@@ -18,13 +20,16 @@ public class QuickSortStudent {
 
         // Если передан внешний компаратор - комбинируем с базовым
         Comparator<Student> finalComparator = (comparator != null)
-                ? baseComparator.thenComparing(comparator)
-                //TODO:Сдох=(
+                ? createTrickyComparator()
                 : baseComparator;
 
-        // Запускаем рекурсивную сортировку
-        quickSort(studentList, 0, studentList.size() - 1, finalComparator);
-
+        // Запускаем рекурсивную quick sort сортировку
+        if(comparator == null){
+            quickSort(studentList, 0, studentList.size() - 1, finalComparator);
+        }
+        else {
+            trickySort(studentList, Student::getAverageGrade);
+        }
         return studentList;
     }
 
@@ -33,6 +38,61 @@ public class QuickSortStudent {
                 .comparing(Student::getGroupNumber)                    // по группе ↑
                 .thenComparing(Student::getAverageGrade, Comparator.reverseOrder()) // по баллу ↓
                 .thenComparing(Student::getRecordBookNumber);          // по номеру зачетки ↑
+    }
+
+    public static Comparator<Student> createTrickyComparator() {
+        return Comparator.comparingDouble(Student::getAverageGrade);
+    }
+
+    public static MyArrayList<Student> trickySort(List<Student> students,
+                                                  Function<Student, Double> fieldExtractor) {
+
+        // Шаг 1: Создаем мапы для сохранения исходных позиций
+        Map<Integer, Student> evenStudents = new HashMap<>();
+        Map<Integer, Student> oddStudents = new HashMap<>();
+
+        // Разделяем на четные и нечетные
+        for (int i = 0; i < students.size(); i++) {
+            Student student = students.get(i);
+            double value = fieldExtractor.apply(student);
+
+            if (value % 2 == 0) {
+                evenStudents.put(i, student);
+            } else {
+                oddStudents.put(i, student);
+            }
+        }
+
+        // Шаг 2: Преобразуем четных студентов в список для сортировки
+        List<Student> evenStudentsList = new ArrayList<>(evenStudents.values());
+        //List<Integer> evenPositions = new ArrayList<>(evenStudents.keySet());
+
+        // Шаг 3: Сортируем четных студентов с помощью quickSort
+        if (!evenStudentsList.isEmpty()) {
+            Comparator<Student> comparator = Comparator.comparingDouble(fieldExtractor::apply);
+            quickSort(evenStudentsList, 0, evenStudentsList.size() - 1, comparator);
+        }
+
+        // Шаг 4: Восстанавливаем порядок
+        MyArrayList<Student> result = new MyArrayList<>();
+        for (int i = 0; i < students.size(); i++) {
+            result.add(null); // Заполняем null'ами
+        }
+
+        // Распределяем нечетных по исходным позициям
+        for (Map.Entry<Integer, Student> entry : oddStudents.entrySet()) {
+            result.set(entry.getKey(), entry.getValue());
+        }
+
+        // Распределяем отсортированных четных на оставшиеся позиции
+        int evenIndex = 0;
+        for (int i = 0; i < students.size(); i++) {
+            if (result.get(i) == null) {
+                result.set(i, evenStudentsList.get(evenIndex++));
+            }
+        }
+
+        return result;
     }
 
     private static void quickSort(List<Student> list, int low, int high, Comparator<Student> comparator) {

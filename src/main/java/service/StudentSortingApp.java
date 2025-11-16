@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
+import static service.QuickSortStudent.createTrickyComparator;
+
 public class StudentSortingApp {
     private MyArrayList<Student> students;
     private final Scanner scanner;
@@ -150,7 +152,7 @@ public class StudentSortingApp {
 
         Comparator<Student> comparator = switch (choice) {
             case 1 -> null; // Базовая сортировка
-            case 2 -> Comparator.comparing(Student::getGroupNumber);
+            case 2 -> QuickSortStudent.createTrickyComparator();
             case 3 -> null;
             default -> throw new IllegalArgumentException("Неверный выбор");
         };
@@ -160,9 +162,7 @@ public class StudentSortingApp {
             List<Student> sortedList = QuickSortStudent.quickSort(students, comparator);
             // Преобразуем обратно в MyArrayList
             students = new MyArrayList<>();
-            for (Student student : sortedList) {
-                students.add(student);
-            }
+            students.addAll(sortedList);
             System.out.println("Сортировка завершена!");
         }
     }
