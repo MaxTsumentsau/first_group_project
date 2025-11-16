@@ -1,7 +1,8 @@
-package util;
+package service;
 
 import collection.MyArrayList;
 import model.Student;
+import util.StudentValidator;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -85,6 +86,7 @@ public class StudentJsonFileManager {
     }
 
     private String studentToJson(Student student) {
+        //TODO:dote
         return String.format("  {\"group\": \"%s\", \"grade\": %.3f, \"recordBook\": \"%s\"}",
                 student.getGroupNumber(),
                 student.getAverageGrade(),

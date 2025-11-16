@@ -1,6 +1,6 @@
-package util;
+import service.StudentSortingApp;
 
-public class StudentApp {
+public class Application {
     public static void main(String[] args) {
         StudentSortingApp app = new StudentSortingApp();
         try {
