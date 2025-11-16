@@ -13,6 +13,7 @@ public class Student {
         this.recordBookNumber = builder.recordBookNumber;
     }
 
+    //TODO:delete
     public Student(String groupNumber, double averageGrade, String recordBookNumber) {
         this.groupNumber = groupNumber;
         this.averageGrade = averageGrade;
